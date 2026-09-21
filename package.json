@@ -1,6 +1,6 @@
 {
   "name": "@isidrozau/react-voice-gemini-live",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "browser voice control system powered by gemini live api, easily integrate ai voice assistant with access to tools on your web app, custom function calls, coupled with pre-build tools for dom manipulation",
   "keywords": [
     "ai",
@@ -19,9 +19,9 @@
   "license": "ISC",
   "author": "isidoro zau",
   "repository": {
-  "type": "git",
-  "url": "https://github.com/Isidro1234/-isidrozau-react-voice-gemini-live"
-},
+    "type": "git",
+    "url": "https://github.com/Isidro1234/-isidrozau-react-voice-gemini-live"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
