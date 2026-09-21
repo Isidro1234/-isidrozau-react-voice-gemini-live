@@ -8,7 +8,7 @@ This library is highly customizable, allowing you to add your own custom tools, 
 
 # Installation 
 You can download the package on npm using the command below :
-<h2><kbd>npm i @isidrozau/react-voice-gemini-live</kbd></h2>
+<h2><kbd>npm i @isidrozau/react-voice-realtime</kbd></h2>
 <p>using the </p>
 <kbd><VoiceContextProvider/></kbd>
 <img width="679" height="239" alt="photo2" src="https://github.com/user-attachments/assets/4fde0d24-0c9c-4102-ba18-f5fcbc633d43" />
@@ -37,6 +37,8 @@ You can also pass in the system instruction for the assistant, if not passed the
 <p> it accepts an array of properties of the specific function  </p>
 <img width="770" height="218" alt="photo3" src="https://github.com/user-attachments/assets/1e7d9cee-5130-4d3a-9193-376e8f0b66ac" />
 <img width="418" height="124" alt="photo4" src="https://github.com/user-attachments/assets/c6b1e487-59ee-402d-a3eb-fa9d66f0f7c7" />
+
+thank you for using our api
 
 
 
