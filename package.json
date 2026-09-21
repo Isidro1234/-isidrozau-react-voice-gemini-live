@@ -18,6 +18,10 @@
   ],
   "license": "ISC",
   "author": "isidoro zau",
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/Isidro1234/-isidrozau-react-voice-gemini-live"
+},
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
