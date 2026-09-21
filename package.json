@@ -1,0 +1,56 @@
+{
+  "name": "@isidrozau/react-voice-gemini-live",
+  "version": "0.0.1",
+  "description": "browser voice control system powered by gemini live api, easily integrate ai voice assistant with access to tools on your web app, custom function calls, coupled with pre-build tools for dom manipulation",
+  "keywords": [
+    "ai",
+    "assistant",
+    "bvc",
+    "ai",
+    "agent",
+    "react",
+    "ai",
+    "agent",
+    "react",
+    "gemini",
+    "live",
+    "api"
+  ],
+  "license": "ISC",
+  "author": "isidoro zau",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "rollup": "rollup -c --bundleConfigAsCjs",
+    "postinstall": "node ./dist/public/audio-processor.js"
+  },
+  "devDependencies": {
+    "@types/rollup-plugin-peer-deps-external": "^2.2.6",
+    "react": "^19.3.0",
+    "tslib": "^2.8.1"
+  },
+  "dependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/react": "^19.3.0",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-dts": "^6.5.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}
