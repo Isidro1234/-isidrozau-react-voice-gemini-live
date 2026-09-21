@@ -1,8 +1,10 @@
 name: Publish Public Package
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+    - main
+    - release/*
 
 jobs:
   publish:
