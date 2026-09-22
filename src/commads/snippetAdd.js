@@ -3,7 +3,8 @@ import { ensureAndCreate } from '../utils/fs'
 
 
 export function SnippetAdd(name , outDir="public"){
-    const targetDir = path.resolve(process.cwd(), outDir)
+    const targetDir = path.resolve(process.cwd(), outDir);
+    const filename = `${name}.js`;
     const content = `class PCMProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
@@ -42,5 +43,5 @@ export function SnippetAdd(name , outDir="public"){
 
 registerProcessor("pcm-processor", PCMProcessor);
 \n`
-    ensureAndCreate(targetDir , `audio-processor.js` , content)
+    ensureAndCreate(targetDir , filename , content)
 }

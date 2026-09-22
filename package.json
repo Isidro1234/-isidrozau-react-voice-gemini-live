@@ -1,6 +1,6 @@
 {
   "name": "@isidrozau/react-voice-gemini-live-realtime",
-  "version": "0.0.2",
+  "version": "1.1.2",
   "description": "browser voice control system powered by gemini live api, easily integrate ai voice assistant with access to tools on your web app, custom function calls, coupled with pre-build tools for dom manipulation",
   "keywords": [
     "ai",
@@ -26,8 +26,8 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "bin": {
-    "snippet": "./bin/index.js"
-  },
+    "snippet": "./dist/bin/index.js"
+  } ,
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
