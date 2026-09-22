@@ -56,4 +56,15 @@ export default [
     ],
     plugins: [dts.default ? dts.default() : dts()],
   },
+  {
+      input: 'bin/index.js',
+  output: [
+    { file: 'dist/bin/index.js', format: 'cjs', banner: '#!/usr/bin/env node' },
+    { file: 'dist/bin/index.mjs', format: 'esm', banner: '#!/usr/bin/env node' },
+  ],
+  plugins: [
+    resolve({ preferBuiltins: true }),
+    commonjs(),
+  ],
+  }
 ];
