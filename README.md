@@ -9,6 +9,9 @@ This library is highly customizable, allowing you to add your own custom tools, 
 # Installation 
 You can download the package on npm using the command below :
 <h2><kbd>npm i @isidrozau/react-voice-gemini-live-realtime</kbd></h2>
+after it the user uses
+<h2><kbd>npx snippet add audio-processor</kbd></h2>
+this adds the audio-processor.js under the public file
 <p>using the </p>
 <kbd><VoiceContextProvider/></kbd>
 <img width="679" height="239" alt="photo2" src="https://github.com/user-attachments/assets/4fde0d24-0c9c-4102-ba18-f5fcbc633d43" />
