@@ -1,4 +1,4 @@
-name: Publish Public Package
+name: Release
 
 on:
   push:
@@ -6,43 +6,79 @@ on:
     - main
     - release/*
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write
+      # id-token: write   # uncomment if you publish to npm with provenance
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: npm install --ignore-scripts
+        run: npm ci
 
-      - name: Build package
-        run: npm run rollup
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync to latest main
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
 
       - name: Bump version
         run: npm version patch --no-git-tag-version
 
       - name: Commit and tag version bump
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          VERSION=$(node -p "require('./package.json').version")
+          TAG="v$VERSION"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1 || git ls-remote --tags origin | grep -q "refs/tags/$TAG$"; then
+            echo "Tag $TAG already exists — skipping (likely a duplicate/rerun)"
+            echo "SKIP_RELEASE=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
           git add package.json package-lock.json
-          git commit -m "Bump version to $(node -p "require('./package.json').version") [skip ci]"
-          git tag "v$(node -p "require('./package.json').version")"
-          git push
-          git push --tags
+          git commit -m "Bump version to $VERSION [skip ci]"
+          git tag "$TAG"
+          git push origin HEAD:main
+          git push origin "$TAG"
+
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+
+      - name: Build
+        if: env.SKIP_RELEASE != 'true'
+        run: npm run rollup
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        if: env.SKIP_RELEASE != 'true'
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: env.SKIP_RELEASE != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          generate_release_notes: true
