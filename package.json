@@ -1,5 +1,5 @@
 {
-  "name": "@isidrozau/react-voice-gemini-live",
+  "name": "@isidrozau/react-voice-gemini-live-realtime",
   "version": "0.0.1",
   "description": "browser voice control system powered by gemini live api, easily integrate ai voice assistant with access to tools on your web app, custom function calls, coupled with pre-build tools for dom manipulation",
   "keywords": [
@@ -18,6 +18,10 @@
   ],
   "license": "ISC",
   "author": "isidoro zau",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Isidro1234/-isidrozau-react-voice-gemini-live"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -29,9 +33,7 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "rollup": "rollup -c --bundleConfigAsCjs",
-    "postinstall": "node ./dist/public/audio-processor.js"
+    "rollup": "rollup -c --bundleConfigAsCjs"
   },
   "devDependencies": {
     "@types/rollup-plugin-peer-deps-external": "^2.2.6",
