@@ -3,8 +3,8 @@ name: Release
 on:
   push:
     branches:
-    - main
-    - release/*
+      - main
+      - release/*
 
 concurrency:
   group: release-${{ github.ref }}
@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      # id-token: write   # uncomment if you publish to npm with provenance
+      id-token: write   # required for npm OIDC trusted publishing
 
     steps:
       - name: Checkout
@@ -30,6 +30,9 @@ jobs:
           node-version: 20
           registry-url: "https://registry.npmjs.org"
 
+      - name: Ensure npm supports trusted publishing
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: npm ci
 
@@ -38,10 +41,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Sync to latest main
+      - name: Sync to latest branch
         run: |
-          git fetch origin main
-          git reset --hard origin/main
+          git fetch origin "${{ github.ref_name }}"
+          git reset --hard "origin/${{ github.ref_name }}"
 
       - name: Bump version
         run: npm version patch --no-git-tag-version
@@ -60,7 +63,7 @@ jobs:
           git add package.json package-lock.json
           git commit -m "Bump version to $VERSION [skip ci]"
           git tag "$TAG"
-          git push origin HEAD:main
+          git push origin "HEAD:${{ github.ref_name }}"
           git push origin "$TAG"
 
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
@@ -72,9 +75,7 @@ jobs:
 
       - name: Publish to npm
         if: env.SKIP_RELEASE != 'true'
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance
 
       - name: Create GitHub Release
         if: env.SKIP_RELEASE != 'true'
