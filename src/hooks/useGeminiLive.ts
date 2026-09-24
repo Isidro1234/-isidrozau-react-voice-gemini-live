@@ -159,9 +159,13 @@ const changeColor = {
   }, [myTool]);
   const instruction = systemInst.systemInst || `You are Assistant called Moody, You have access to some tools that the user can request.`
  const connect = useCallback(() => {
-    const ws:any = new WebSocket(WS_URL);
-    wsRef.current = ws;
- 
+    let ws: WebSocket
+    try {
+      ws = new WebSocket(WS_URL)
+    } catch (e: any) {
+      console.log(`Voice component: could not connect, ${e?.message}`)
+      return
+    }
     ws.onopen = () => {
       ws.send(
         JSON.stringify({
@@ -178,7 +182,9 @@ const changeColor = {
     };
  
     ws.onmessage = async (event:any) => {
-      const raw = typeof event.data === "string" ? event.data : await event.data.text();
+      try{
+      
+         const raw = typeof event.data === "string" ? event.data : await event.data.text();
       const response = JSON.parse(raw);
  
       if (response.setupComplete) {
@@ -202,13 +208,17 @@ const changeColor = {
       if (functionCalls.length > 0) {
         handleToolCall(functionCalls)
       }
+      }catch(error:any){
+          console.log(`Voice component: message error, ${e?.message}`)
+      }
     };
- 
-    ws.onerror = (err:any) => console.error("Gemini WS error:", err);
-    ws.onclose = (event:any) => {
+
+     ws.onerror = (err:any) => console.error("Gemini WS error:", err);
+      ws.onclose = (event:any) => {
       console.log("Gemini WS closed:", event.code, event.reason);
       setIsConnected(false);
-    };
+      };
+       console.log('connection error: check connection')
   }, [playPCMChunk, handleToolCall]);
   const sendAudioChunk = useCallback((chunk:any) => {
     const ws:any = wsRef.current;
