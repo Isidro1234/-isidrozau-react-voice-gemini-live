@@ -28,12 +28,18 @@ const VoiceContext = createContext<refTypes>({
 export default function VoiceContextProvider({systemInstruction,  customB, children , apiKey , functions , functionsProps}:VoiceContextType) {
     const { isConnected, isRecording, isModelSpeaking, startRecording, stopRecording } = useGeminiLive(systemInstruction || null , {apiKey:apiKey}, functions || null , functionsProps || null)
     const buttonref = useRef<HTMLButtonElement>(null)
-    return (
+    try{
+        return (
     <VoiceContext.Provider value={{buttonref, isConnected , isModelSpeaking , isRecording}}>
         <Action customB={customB} refbutton={buttonref} ismodelspeaking={isModelSpeaking} isdisable={isConnected} click={ isRecording ?  stopRecording  : startRecording}/>
         {children}
     </VoiceContext.Provider>
   )
+        }catch(error:any){
+    return(<>
+     {children}
+    </>)
+}
 }
 
 export const useCustomButton = () => useContext(VoiceContext)
