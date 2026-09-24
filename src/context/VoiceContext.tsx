@@ -4,44 +4,67 @@ import type { FunctionPropsType, FunctionsCustomTypes, systemType } from '../typ
 import Action from '../components/Action'
 import { useGeminiLive } from '../hooks/useGeminiLive'
 
-type VoiceContextType = {
-    children:React.ReactNode,
-    apiKey:string, 
+type VoiceProviderProps = {
+    children: React.ReactNode,
+    apiKey: string,
     functions?: FunctionsCustomTypes,
-    functionsProps?: FunctionPropsType | null ,
-    customB:boolean ,
+    functionsProps?: FunctionPropsType | null,
+    customB: boolean,
     systemInstruction: systemType
 }
-type refTypes = {
-    buttonref: any,
-    isConnected:any,
-    isRecording:any, 
-    isModelSpeaking:any
+
+type VoiceContextValue = {
+    buttonref: React.RefObject<HTMLButtonElement | null> | null,
+    isConnected: boolean,
+    isRecording: boolean,
+    isModelSpeaking: boolean
 }
 
-const VoiceContext = createContext<refTypes>({
-    buttonref:null, 
-    isConnected:null,
-    isRecording:null,
-    isModelSpeaking:null
+const VoiceContext = createContext<VoiceContextValue>({
+    buttonref: null,
+    isConnected: false,
+    isRecording: false,
+    isModelSpeaking: false
 })
-export default function VoiceContextProvider({systemInstruction,  customB, children , apiKey , functions , functionsProps}:VoiceContextType) {
-   const buttonref = useRef<HTMLButtonElement>(null)
-    const { isConnected, isRecording, isModelSpeaking, startRecording, stopRecording } = useGeminiLive(systemInstruction || null , {apiKey:apiKey}, functions || null , functionsProps || null)
-       try{
-        return (
-        <VoiceContext.Provider value={{buttonref, isConnected , isModelSpeaking , isRecording}}>
-            <Action customB={customB} refbutton={buttonref} ismodelspeaking={isModelSpeaking} isdisable={isConnected} click={ isRecording ?  stopRecording  : startRecording}/>
+
+// Keeps a render-time crash in the voice UI from taking down the host app.
+class VoiceErrorBoundary extends React.Component<
+    { children: React.ReactNode, fallback: React.ReactNode },
+    { hasError: boolean }
+> {
+    state = { hasError: false }
+    static getDerivedStateFromError() { return { hasError: true } }
+    componentDidCatch(error: Error) {
+        console.log(`there was an error with the app, ${error?.message}`)
+    }
+    render() { return this.state.hasError ? this.props.fallback : this.props.children }
+}
+
+function VoiceInner({ systemInstruction, customB, children, apiKey, functions, functionsProps }: VoiceProviderProps) {
+    const buttonref = useRef<HTMLButtonElement>(null)
+    const { isConnected, isRecording, isModelSpeaking, startRecording, stopRecording } =
+        useGeminiLive(systemInstruction || null as any, { apiKey }, functions || null, functionsProps || null)
+
+    return (
+        <VoiceContext.Provider value={{ buttonref, isConnected, isModelSpeaking, isRecording }}>
+            <Action
+                customB={customB}
+                refbutton={buttonref}
+                ismodelspeaking={isModelSpeaking}
+                isdisable={isConnected}
+                click={isRecording ? stopRecording : startRecording}
+            />
             {children}
         </VoiceContext.Provider>
-      )
-   }catch(error:any) {
-       console.log(`there was an error with the app, ${error?.message}`)
-       return(
-        <>
-             {children}
-        </>)
-    }
+    )
+}
+
+export default function VoiceContextProvider(props: VoiceProviderProps) {
+    return (
+        <VoiceErrorBoundary fallback={<>{props.children}</>}>
+            <VoiceInner {...props} />
+        </VoiceErrorBoundary>
+    )
 }
 
 export const useCustomButton = () => useContext(VoiceContext)
